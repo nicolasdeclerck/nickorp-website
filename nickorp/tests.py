@@ -20,7 +20,7 @@ class AuthTestCase(TestCase):
             'username': 'admin',
             'password': 'admin123',
         })
-        self.assertRedirects(response, '/admin/', fetch_redirect_response=False)
+        self.assertRedirects(response, '/dashboard/', fetch_redirect_response=False)
 
     def test_regular_user_cannot_login(self):
         response = self.client.post('/login/', {
