@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Nickorp — Site en construction{% endblock %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white px-4">
+
+    <!-- Gears -->
+    <div class="relative w-48 h-48 mb-10">
+        {% include "partials/icons/cog.html" with class="absolute top-0 left-0 w-32 h-32 text-indigo-500 animate-spin-slow" %}
+        {% include "partials/icons/cog.html" with class="absolute bottom-2 right-2 w-24 h-24 text-indigo-400 animate-spin-slow-reverse" %}
+    </div>
+
+    <!-- Title -->
+    <h1 class="text-4xl sm:text-5xl font-bold mb-3">Nickorp</h1>
+    <p class="text-lg text-gray-400 mb-12">Site en construction</p>
+
+    <!-- Social links -->
+    <div class="flex gap-6">
+        <a href="https://www.linkedin.com/in/nicolas-declerck/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors">
+            {% include "partials/icons/linkedin.html" with class="w-8 h-8" %}
+        </a>
+        <a href="https://github.com/nicolasdeclerck" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors">
+            {% include "partials/icons/github.html" with class="w-8 h-8" %}
+        </a>
+    </div>
+
+</div>
+{% endblock %}

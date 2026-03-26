@@ -1,0 +1,17 @@
+@import "tailwindcss";
+@source "../../templates/**/*.html";
+
+@theme {
+    --animate-spin-slow: spin-slow 6s linear infinite;
+    --animate-spin-slow-reverse: spin-slow-reverse 4s linear infinite;
+}
+
+@keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes spin-slow-reverse {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
+}
