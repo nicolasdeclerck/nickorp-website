@@ -113,11 +113,12 @@ chmod 600 .env
 ### 4. Lancer l'application
 
 ```bash
-docker compose up -d --build
+docker compose pull
+docker compose up -d
 docker compose exec web python manage.py migrate
 docker compose exec web python manage.py createsuperuser
 ```
 
-L'application est accessible sur le port 8000.
+L'image Docker est automatiquement build et pushée sur Docker Hub via GitHub Actions à chaque push sur `main` (après validation des tests).
 
-Le superuser permet d'accéder à l'interface d'administration via `/login/`. Cette commande est à exécuter une seule fois, après le premier déploiement.
+Le superuser permet d'accéder à l'interface d'administration via `/login/`. La commande `createsuperuser` est à exécuter une seule fois, après le premier déploiement.
