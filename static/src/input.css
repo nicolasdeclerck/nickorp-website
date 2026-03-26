@@ -2,6 +2,12 @@
 @source "../../templates/**/*.html";
 
 @theme {
+    --color-dark: #042940;
+    --color-teal: #005C53;
+    --color-lime: #9FC131;
+    --color-neon: #DBF227;
+    --color-sand: #D6D58E;
+
     --animate-spin-slow: spin-slow 6s linear infinite;
     --animate-spin-slow-reverse: spin-slow-reverse 4s linear infinite;
 }
