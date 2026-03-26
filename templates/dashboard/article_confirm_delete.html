@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Supprimer — Nickorp{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-dark text-white px-4 py-12">
+    <div class="max-w-lg mx-auto">
+        <h1 class="text-2xl font-bold mb-6">Supprimer l'article</h1>
+        <p class="text-sand mb-8">Êtes-vous sûr de vouloir supprimer <strong class="text-white">{{ object.title }}</strong> ?</p>
+
+        <form method="post" class="flex gap-4">
+            {% csrf_token %}
+            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded transition-colors">
+                Supprimer
+            </button>
+            <a href="{% url 'dashboard:list' %}" class="bg-teal hover:bg-teal/80 text-sand px-6 py-2 rounded transition-colors">
+                Annuler
+            </a>
+        </form>
+    </div>
+</div>
+{% endblock %}

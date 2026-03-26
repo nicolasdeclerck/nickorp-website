@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Blog — Nickorp{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-dark text-white px-4 py-12">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl font-bold mb-10">Blog</h1>
+
+        {% if articles %}
+        <div class="space-y-8">
+            {% for article in articles %}
+            <a href="{% url 'blog:detail' article.slug %}" class="block group">
+                <article class="flex gap-6 items-start">
+                    {% if article.cover_image %}
+                    <img src="{{ article.cover_image.url }}" alt="" class="w-40 h-28 object-cover rounded shrink-0">
+                    {% endif %}
+                    <div>
+                        <h2 class="text-xl font-semibold group-hover:text-neon transition-colors">{{ article.title }}</h2>
+                        <p class="text-sm text-sand mt-1">{{ article.created_at|date:"d F Y" }}</p>
+                        {% if article.tag_list %}
+                        <div class="flex gap-2 mt-2">
+                            {% for tag in article.tag_list %}
+                            <span class="text-xs bg-teal px-2 py-1 rounded text-sand">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </article>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-sand">Aucun article pour le moment.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

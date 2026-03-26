@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — Nickorp{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-dark text-white px-4 py-12">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex justify-between items-center mb-10">
+            <h1 class="text-3xl font-bold">Articles</h1>
+            <a href="{% url 'dashboard:create' %}" class="bg-lime hover:bg-neon text-dark font-semibold px-4 py-2 rounded transition-colors">
+                Nouvel article
+            </a>
+        </div>
+
+        {% if articles %}
+        <table class="w-full text-left">
+            <thead>
+                <tr class="border-b border-teal text-sand text-sm">
+                    <th class="pb-3">Titre</th>
+                    <th class="pb-3">Statut</th>
+                    <th class="pb-3">Date</th>
+                    <th class="pb-3 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                <tr class="border-b border-teal/30">
+                    <td class="py-3">{{ article.title }}</td>
+                    <td class="py-3">
+                        {% if article.status == 'published' %}
+                        <span class="text-xs bg-lime/20 text-lime px-2 py-1 rounded">Publié</span>
+                        {% else %}
+                        <span class="text-xs bg-sand/20 text-sand px-2 py-1 rounded">Brouillon</span>
+                        {% endif %}
+                    </td>
+                    <td class="py-3 text-sand text-sm">{{ article.created_at|date:"d/m/Y" }}</td>
+                    <td class="py-3 text-right space-x-3">
+                        <a href="{% url 'dashboard:edit' article.slug %}" class="text-sand hover:text-neon transition-colors text-sm">Éditer</a>
+                        <a href="{% url 'dashboard:delete' article.slug %}" class="text-red-400 hover:text-red-300 transition-colors text-sm">Supprimer</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-sand">Aucun article. Commencez par en créer un.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
