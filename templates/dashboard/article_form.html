@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}{% if form.instance.pk %}Éditer{% else %}Nouvel{% endif %} article — Nickorp{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-dark text-white px-4 py-12">
+    <div class="max-w-5xl mx-auto">
+        <a href="{% url 'dashboard:list' %}" class="text-sand hover:text-neon transition-colors text-sm">&larr; Retour</a>
+
+        <h1 class="text-3xl font-bold mt-4 mb-8">
+            {% if form.instance.pk %}Éditer l'article{% else %}Nouvel article{% endif %}
+        </h1>
+
+        <form method="post" enctype="multipart/form-data" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {% csrf_token %}
+
+            <div class="space-y-4">
+                <div>
+                    <label for="id_title" class="block text-sm text-sand mb-1">Titre</label>
+                    <input type="text" name="title" id="id_title" value="{{ form.instance.title|default:'' }}"
+                           class="w-full px-3 py-2 bg-teal border border-teal rounded text-white focus:outline-none focus:border-lime">
+                </div>
+
+                <div>
+                    <label for="id_slug" class="block text-sm text-sand mb-1">Slug</label>
+                    <input type="text" name="slug" id="id_slug" value="{{ form.instance.slug|default:'' }}"
+                           class="w-full px-3 py-2 bg-teal border border-teal rounded text-white focus:outline-none focus:border-lime">
+                </div>
+
+                <div>
+                    <label for="id_content" class="block text-sm text-sand mb-1">Contenu (Markdown)</label>
+                    <textarea name="content" id="id_content" rows="16"
+                              class="w-full px-3 py-2 bg-teal border border-teal rounded text-white focus:outline-none focus:border-lime font-mono text-sm">{{ form.instance.content|default:'' }}</textarea>
+                </div>
+
+                <div>
+                    <label for="id_cover_image" class="block text-sm text-sand mb-1">Image de couverture</label>
+                    {% if form.instance.cover_image %}
+                    <div class="flex items-center gap-3 mb-2">
+                        <img src="{{ form.instance.cover_image.url }}" alt="" class="h-16 w-24 object-cover rounded">
+                        <span class="text-sm text-sand">{{ form.instance.cover_image.name }}</span>
+                        <label class="flex items-center gap-1 text-sm text-red-400 hover:text-red-300 cursor-pointer transition-colors">
+                            <input type="checkbox" name="clear_cover_image" value="1" class="accent-red-400">
+                            Supprimer
+                        </label>
+                    </div>
+                    {% endif %}
+                    <input type="file" name="cover_image" id="id_cover_image" accept="image/*"
+                           class="w-full text-sand text-sm file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:bg-teal file:text-sand file:cursor-pointer">
+                </div>
+
+                <div>
+                    <label for="id_tags" class="block text-sm text-sand mb-1">Tags (séparés par des virgules)</label>
+                    <input type="text" name="tags" id="id_tags" value="{{ form.instance.tags|default:'' }}"
+                           class="w-full px-3 py-2 bg-teal border border-teal rounded text-white focus:outline-none focus:border-lime">
+                </div>
+
+                <div>
+                    <label for="id_status" class="block text-sm text-sand mb-1">Statut</label>
+                    <select name="status" id="id_status"
+                            class="w-full px-3 py-2 bg-teal border border-teal rounded text-white focus:outline-none focus:border-lime">
+                        <option value="draft" {% if form.instance.status == 'draft' %}selected{% endif %}>Brouillon</option>
+                        <option value="published" {% if form.instance.status == 'published' %}selected{% endif %}>Publié</option>
+                    </select>
+                </div>
+
+                {% if form.errors %}
+                <div class="text-red-400 text-sm">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                        <p>{{ field }} : {{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <button type="submit"
+                        class="bg-lime hover:bg-neon text-dark font-semibold px-6 py-2 rounded transition-colors">
+                    {% if form.instance.pk %}Mettre à jour{% else %}Créer{% endif %}
+                </button>
+            </div>
+
+            <div>
+                <p class="text-sm text-sand mb-2">Prévisualisation</p>
+                <div id="preview" class="prose prose-invert bg-teal/30 rounded p-4 min-h-[200px]"></div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+const textarea = document.getElementById('id_content');
+const preview = document.getElementById('preview');
+let timeout;
+
+textarea.addEventListener('input', () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+        fetch('{% url "dashboard:preview" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'content=' + encodeURIComponent(textarea.value),
+        })
+        .then(r => r.json())
+        .then(data => { preview.innerHTML = data.html; });
+    }, 300);
+});
+
+// Initial preview
+if (textarea.value) {
+    textarea.dispatchEvent(new Event('input'));
+}
+</script>
+{% endblock %}
