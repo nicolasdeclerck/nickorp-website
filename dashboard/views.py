@@ -20,11 +20,21 @@ class DashboardCreateView(SuperuserRequiredMixin, CreateView):
     fields = ['title', 'slug', 'content', 'cover_image', 'tags', 'status']
     success_url = reverse_lazy('dashboard:list')
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['slug'].required = False
+        return form
+
 
 class DashboardUpdateView(SuperuserRequiredMixin, UpdateView):
     model = Article
     template_name = 'dashboard/article_form.html'
     fields = ['title', 'slug', 'content', 'cover_image', 'tags', 'status']
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['slug'].required = False
+        return form
     success_url = reverse_lazy('dashboard:list')
 
     def form_valid(self, form):

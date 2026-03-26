@@ -10,7 +10,7 @@ class Article(models.Model):
     ]
 
     title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True, max_length=200)
+    slug = models.SlugField(unique=True, max_length=200, blank=True)
     content = models.TextField()
     cover_image = models.ImageField(upload_to='blog/covers/', blank=True, null=True)
     tags = models.CharField(max_length=200, blank=True)
