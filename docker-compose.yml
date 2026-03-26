@@ -24,6 +24,7 @@ services:
       retries: 5
 
   web:
+    image: nickorp/nickorp-website:latest
     build: .
     command: gunicorn nickorp.wsgi:application --bind 0.0.0.0:8000
     volumes:
@@ -39,6 +40,7 @@ services:
         condition: service_healthy
 
   celery:
+    image: nickorp/nickorp-website:latest
     build: .
     command: celery -A nickorp worker -l info
     env_file:
