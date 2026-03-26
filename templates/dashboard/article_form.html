@@ -35,6 +35,16 @@
 
                 <div>
                     <label for="id_cover_image" class="block text-sm text-sand mb-1">Image de couverture</label>
+                    {% if form.instance.cover_image %}
+                    <div class="flex items-center gap-3 mb-2">
+                        <img src="{{ form.instance.cover_image.url }}" alt="" class="h-16 w-24 object-cover rounded">
+                        <span class="text-sm text-sand">{{ form.instance.cover_image.name }}</span>
+                        <label class="flex items-center gap-1 text-sm text-red-400 hover:text-red-300 cursor-pointer transition-colors">
+                            <input type="checkbox" name="clear_cover_image" value="1" class="accent-red-400">
+                            Supprimer
+                        </label>
+                    </div>
+                    {% endif %}
                     <input type="file" name="cover_image" id="id_cover_image" accept="image/*"
                            class="w-full text-sand text-sm file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:bg-teal file:text-sand file:cursor-pointer">
                 </div>

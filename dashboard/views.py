@@ -27,6 +27,12 @@ class DashboardUpdateView(SuperuserRequiredMixin, UpdateView):
     fields = ['title', 'slug', 'content', 'cover_image', 'tags', 'status']
     success_url = reverse_lazy('dashboard:list')
 
+    def form_valid(self, form):
+        if self.request.POST.get('clear_cover_image'):
+            form.instance.cover_image.delete(save=False)
+            form.instance.cover_image = None
+        return super().form_valid(form)
+
 
 class DashboardDeleteView(SuperuserRequiredMixin, DeleteView):
     model = Article
