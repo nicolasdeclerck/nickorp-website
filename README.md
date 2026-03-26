@@ -63,10 +63,13 @@ npm run dev
 # Dans un autre terminal, lancer Django
 source venv-nickorp-website/bin/activate
 python manage.py migrate
+python manage.py createsuperuser
 python manage.py runserver
 ```
 
 Le site est accessible sur http://localhost:8000.
+
+Le superuser permet d'accéder à l'interface d'administration via `/login/`.
 
 ## Déploiement en production
 
@@ -116,3 +119,5 @@ docker compose exec web python manage.py createsuperuser
 ```
 
 L'application est accessible sur le port 8000.
+
+Le superuser permet d'accéder à l'interface d'administration via `/login/`. Cette commande est à exécuter une seule fois, après le premier déploiement.
