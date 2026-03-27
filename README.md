@@ -155,9 +155,15 @@ Le site est accessible sur https://nickorp.com.
 ### 5. Mises à jour
 
 ```bash
+cd ~/nickorp-website
+git pull
 docker compose pull
 docker compose up -d
 docker compose exec web python manage.py migrate
 ```
+
+- `git pull` met à jour les fichiers de configuration (`docker-compose.yml`, `.env.example`, etc.)
+- `docker compose pull` met à jour l'image Docker (code Django)
+- `migrate` applique les éventuelles nouvelles migrations
 
 L'image Docker est automatiquement build et pushée sur Docker Hub via GitHub Actions à chaque push sur `main` (après validation des tests).
