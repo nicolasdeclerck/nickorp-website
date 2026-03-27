@@ -6,21 +6,23 @@ Site web Nickorp — Django, PostgreSQL, Celery, Tailwind CSS, Nginx.
 
 ```mermaid
 graph TB
-    Client([Client]) -->|HTTPS :443| Nginx
+    Client([Client]) -->|HTTPS :443| Traefik
 
-    subgraph Docker Compose
-        Nginx[Nginx<br>Reverse Proxy + SSL] -->|HTTP :8000| Web
-        Nginx -->|/static/| StaticFiles[(Static Files)]
-        Nginx -->|/media/| MediaFiles[(Media Files)]
-        Web[Web<br>Django + Gunicorn]
-        Celery[Celery Worker]
-        DB[(PostgreSQL)]
-        Redis[(Redis)]
+    subgraph VPS
+        Traefik[Traefik<br>Reverse Proxy + SSL]
 
-        Web -->|SQL| DB
-        Web -->|Tâches async| Redis
-        Celery -->|Consume| Redis
-        Celery -->|SQL| DB
+        subgraph Docker Compose
+            Traefik -->|HTTP :8000| Web
+            Web[Web<br>Django + Gunicorn]
+            Celery[Celery Worker]
+            DB[(PostgreSQL)]
+            Redis[(Redis)]
+
+            Web -->|SQL| DB
+            Web -->|Tâches async| Redis
+            Celery -->|Consume| Redis
+            Celery -->|SQL| DB
+        end
     end
 
     subgraph CI/CD
@@ -101,14 +103,16 @@ Les tests couvrent :
 
 ### 1. Prérequis serveur
 
-Installer Docker et Docker Compose sur le VPS.
-
-Configurer les DNS chez le registrar :
+- Docker et Docker Compose sur le VPS
+- Traefik en reverse proxy (réseau `n8n-traefik_default`)
+- DNS configuré chez le registrar :
 
 | Type | Nom | Valeur |
 |------|-----|--------|
 | A | `@` | IP du VPS |
 | A | `www` | IP du VPS |
+
+Traefik gère automatiquement le certificat SSL via Let's Encrypt.
 
 ### 2. Cloner le projet sur le VPS
 
@@ -141,23 +145,14 @@ CELERY_RESULT_BACKEND=redis://redis:6379/0
 
 ```bash
 docker compose pull
-docker compose up db redis web -d
+docker compose up -d
 docker compose exec web python manage.py migrate
 docker compose exec web python manage.py createsuperuser
 ```
 
-### 5. Configurer HTTPS
-
-```bash
-./init-ssl.sh
-docker compose up -d
-```
-
-Le script demande un certificat Let's Encrypt puis active la config Nginx avec SSL.
-
 Le site est accessible sur https://nickorp.com.
 
-### 6. Mises à jour
+### 5. Mises à jour
 
 ```bash
 docker compose pull
