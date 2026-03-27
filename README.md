@@ -77,15 +77,14 @@ Le superuser permet d'accéder à l'interface d'administration via `/login/`.
 
 Installer Docker et Docker Compose sur le VPS.
 
-### 2. Copier le projet
+### 2. Cloner le projet sur le VPS
 
 ```bash
-scp -r . user@vps:/chemin/vers/nickorp-website
+git clone git@github.com:nicolasdeclerck/nickorp-website.git
+cd nickorp-website
 ```
 
 ### 3. Configurer l'environnement
-
-Créer le fichier `.env` sur le serveur à partir du template :
 
 ```bash
 cp .env.example .env
@@ -96,7 +95,7 @@ Modifier les valeurs :
 ```
 DJANGO_SECRET_KEY=<clé aléatoire>
 DJANGO_DEBUG=False
-DJANGO_ALLOWED_HOSTS=mon-domaine.fr
+DJANGO_ALLOWED_HOSTS=nickorp.com,www.nickorp.com
 POSTGRES_PASSWORD=<mot de passe solide>
 POSTGRES_HOST=db
 POSTGRES_PORT=5432
@@ -110,13 +109,30 @@ Sécuriser le fichier :
 chmod 600 .env
 ```
 
-### 4. Lancer l'application
+### 4. Premier déploiement
+
+```bash
+docker compose pull
+docker compose up db redis web -d
+docker compose exec web python manage.py migrate
+docker compose exec web python manage.py createsuperuser
+```
+
+### 5. Configurer HTTPS
+
+```bash
+./init-ssl.sh
+docker compose up -d
+```
+
+Le script demande un certificat Let's Encrypt puis active la config Nginx avec SSL.
+
+### 6. Mises à jour
 
 ```bash
 docker compose pull
 docker compose up -d
 docker compose exec web python manage.py migrate
-docker compose exec web python manage.py createsuperuser
 ```
 
 L'image Docker est automatiquement build et pushée sur Docker Hub via GitHub Actions à chaque push sur `main` (après validation des tests).

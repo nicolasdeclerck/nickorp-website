@@ -10,3 +10,4 @@ media/
 dist/
 node_modules/
 static/css/output.css
+nginx/nginx-active.conf
